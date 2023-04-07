@@ -21,7 +21,17 @@ create table dbo.Basket (
   Quantity int not null,
   Value int not null,
   PurchaseDate date not null default getdate(),
-  DiscountValue int not null,  
+  DiscountValue int not null,
+  constraint FK_ID_SKU foreign key(ID_SKU)
+    references dbo.SKU(ID)
+	-- Условия ON опциональны, применил NO ACTION как условие по умолчанию 
+	on delete no action
+	on update no action,
+  constraint FK_ID_Family foreign key(ID_Family)
+    references dbo.Family(ID)
+	-- тоже самое 
+	on delete no action
+	on update no action,
   constraint CHK_Quantity check(Quantity >= 0),
-  constraint CHK_Value check(Value >= 0),  
+  constraint CHK_Value check(Value >= 0)  
 );
