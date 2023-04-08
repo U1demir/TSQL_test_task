@@ -1,3 +1,5 @@
+--Функция рассчитывает стоимость передаваемого продукта из таблицы dbo.Basket по формуле
+
 create function dbo.udf_GetSKUPrice (@ID_SKU as int)
 	returns decimal(18, 2)
 	begin
