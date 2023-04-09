@@ -21,7 +21,7 @@ create table dbo.Basket (
   Quantity int not null,
   Value decimal not null,
   PurchaseDate date not null default getdate(),
-  DiscountValue int not null,
+  DiscountValue int not null default 0,
   constraint FK_ID_SKU foreign key(ID_SKU)
     references dbo.SKU(ID)
 	-- Условия ON опциональны, применил NO ACTION как условие по умолчанию 
