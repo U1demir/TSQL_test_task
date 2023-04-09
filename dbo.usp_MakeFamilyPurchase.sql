@@ -3,8 +3,7 @@
 create proc dbo.usp_MakeFamilyPurchase
 	@FamilySurName varchar(255)
 as
--- Для корретной работы процедуры поле Surname в таблице dbo.Family должно быть уникально?
-
+-- Для корретной работы процедуры поле Surname в таблице dbo.Family должно быть уникально? Возможно, входной параметр должен быть привязан к ID.
 if @FamilySurName in (select Surname from dbo.Family)
 	begin
 		declare @ID as int, @BasketValue as decimal
