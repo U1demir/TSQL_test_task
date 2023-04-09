@@ -16,4 +16,3 @@ if @FamilySurName in (select Surname from dbo.Family)
 	end
 else
 	print 'Покупатель c такой фамилией отсутствует в базе данных';
-go
