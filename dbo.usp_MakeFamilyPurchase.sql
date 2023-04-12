@@ -3,15 +3,26 @@
 create proc dbo.usp_MakeFamilyPurchase
 	@FamilySurName varchar(255)
 as
--- Для корретной работы процедуры поле Surname в таблице dbo.Family должно быть уникально? Возможно, входной параметр должен быть привязан к ID.
-if @FamilySurName in (select Surname from dbo.Family)
-	begin
-		declare @ID as int, @BasketValue as decimal
-		select @ID =  ID from dbo.Family where Surname = @FamilySurName
-		select @BasketValue = sum(dbo.Basket.Value) from dbo.Basket where ID_Family = @ID
-		update dbo.Family
-			set BudgetValue = BudgetValue - @BasketValue
-		where Surname = @FamilySurName;
-	end
-else
+begin try	
+	with cte_FamilyValue as (
+		select 
+			dbo.Family.ID
+			,sum(dbo.Basket.Value) as Value 
+		from dbo.Family 
+			inner join dbo.Basket on dbo.Family.ID = dbo.Basket.ID_Family
+		group by 
+			dbo.Family.ID 
+		)
+	update dbo.Family
+		set BudgetValue = F.BudgetValue - cte_FamilyValue.Value
+		from dbo.Family as F 
+			inner join cte_FamilyValue on F.ID = cte_FamilyValue.ID 
+		where Surname = @FamilySurName
+/* В случае ввода отсутствующей фамилии результат выдаст 0 строк, таким образом будет вызвана ошибка деления на 0, 
+UPDATE не произойдет и процедура перейдет к блоку CATCH */ 		
+		declare @x as int
+		set @x = 1/@@rowcount
+end try
+begin catch
 	print 'Покупатель c такой фамилией отсутствует в базе данных';
+end catch;
