@@ -11,5 +11,5 @@ begin
 	from dbo.Basket 
 		inner join inserted as i1 on dbo.Basket.ID = i1.ID 
 		inner join inserted as i2 on i1.ID_SKU = i2.ID_SKU 
-		where i1.ID <> i2.ID
+	where i1.ID <> i2.ID
 end;
