@@ -3,7 +3,9 @@
 create proc dbo.usp_MakeFamilyPurchase
 	@FamilySurName varchar(255)
 as
-begin try	
+begin try
+	if @FamilySurName not in (select dbo.Family.Surname from dbo.Family)
+		raiserror ('Покупатель c такой фамилией отсутствует в базе данных', 16, 1);
 	with cte_FamilyValue as (
 		select 
 			dbo.Family.ID
@@ -17,12 +19,8 @@ begin try
 		set BudgetValue = F.BudgetValue - cte_FamilyValue.Value
 		from dbo.Family as F 
 			inner join cte_FamilyValue on F.ID = cte_FamilyValue.ID 
-		where Surname = @FamilySurName
-/* В случае ввода отсутствующей фамилии результат выдаст 0 строк, таким образом будет вызвана ошибка деления на 0, 
-UPDATE не произойдет и процедура перейдет к блоку CATCH */ 		
-		declare @x as int
-		set @x = 1/@@rowcount
+		where Surname = @FamilySurName;
 end try
 begin catch
-	print 'Покупатель c такой фамилией отсутствует в базе данных'
+	throw	
 end catch;
