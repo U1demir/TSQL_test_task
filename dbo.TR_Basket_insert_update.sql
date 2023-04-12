@@ -5,7 +5,7 @@ for insert, update as
 begin
 	update dbo.Basket
 	set DiscountValue = case 
-	when @@ROWCOUNT > 0 then dbo.Basket.Value * 0.05 
+	when @@rowcount > 0 then dbo.Basket.Value * 0.05 
 	else 0.00 
 	end
 	from dbo.Basket 
